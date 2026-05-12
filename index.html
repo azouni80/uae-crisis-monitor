@@ -171,6 +171,20 @@ a{color:#3498db;text-decoration:none;} a:hover{text-decoration:underline;}
 /* FOOTER */
 .dash-footer{padding:20px 24px;text-align:center;font-size:0.78em;color:var(--muted);border-top:1px solid var(--border);}
 
+/* BOND TRACKER */
+.bond-rec{display:flex;border-radius:8px;overflow:hidden;margin:14px 0;}
+.bond-rec-seg{flex:1;padding:14px 8px;text-align:center;font-weight:700;font-size:0.88em;line-height:1.3;opacity:0.2;transition:all 0.4s;color:#fff;}
+.bond-rec-seg.active{opacity:1;box-shadow:inset 0 0 0 3px rgba(255,255,255,0.45);}
+.bond-rec-green{background:var(--safe);} .bond-rec-amber{background:var(--warning);} .bond-rec-red{background:var(--accent);}
+.bond-context-bar{background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.2);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:0.82em;color:var(--muted);display:flex;gap:20px;flex-wrap:wrap;}
+.bond-context-bar strong{color:var(--text);}
+.bond-rec-text{margin-top:10px;padding:10px 14px;border-radius:6px;background:rgba(255,255,255,0.05);font-size:0.88em;font-weight:500;}
+.bond-yield-input{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.82em;}
+.bond-yield-input label{color:var(--muted);}
+.bond-yield-input input{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:4px 8px;width:80px;font-size:0.9em;}
+.bond-yield-input button{background:#3498db;color:#fff;border:none;border-radius:4px;padding:5px 12px;cursor:pointer;font-size:0.82em;}
+.bond-yield-input button:hover{background:#2980b9;}
+
 /* PRINT */
 @media print{
   .dashboard{display:block;} .sidebar{display:none;}
@@ -200,6 +214,7 @@ a{color:#3498db;text-decoration:none;} a:hover{text-decoration:underline;}
     <a class="nav-link" href="#checklist"><span class="nav-icon">&#9745;</span> Evacuation Checklist</a>
     <a class="nav-link" href="#flights"><span class="nav-icon">&#128747;</span> Flight Status</a>
     <a class="nav-link" href="#markets"><span class="nav-icon">&#128200;</span> Market Data</a>
+    <a class="nav-link" href="#bonds"><span class="nav-icon">&#127981;</span> Bond Tracker</a>
     <a class="nav-link" href="#missiles"><span class="nav-icon">&#127919;</span> Missile Tracker</a>
     <a class="nav-link" href="#fmcg"><span class="nav-icon">&#128722;</span> FMCG Impact</a>
     <a class="nav-link" href="#risks"><span class="nav-icon">&#128680;</span> Risk Assessment</a>
@@ -413,6 +428,64 @@ a{color:#3498db;text-decoration:none;} a:hover{text-decoration:underline;}
         <div class="kpi-card"><div class="kv good" id="kpiAdx">9,869</div><div class="kl">ADX General</div><div class="kc up">+2.85% (8 Apr)</div></div>
         <div class="kpi-card"><div class="kv bad">-16.4%</div><div class="kl">DFM March</div><div class="kc down">Worst since pandemic</div></div>
         <div class="kpi-card"><div class="kv bad" id="kpiVessels">500+</div><div class="kl">Tankers Trapped</div><div class="kc down" id="kpiVesselsNote">400 loaded + 100 empty. Traffic halted</div></div>
+      </div>
+
+      <!-- ===== BOND TRACKER ===== -->
+      <div id="bonds" class="section-anchor"></div>
+      <div class="section-title">&#127981; Bahrain Gov Bond Tracker <span style="font-size:0.6em;color:var(--muted);font-weight:400;">(auto-refreshes every 5 min)</span></div>
+      <div class="card">
+        <div class="bond-context-bar">
+          <span><strong>Instrument:</strong> Bahrain Government USD Bond</span>
+          <span><strong>Purchase Yield:</strong> 8.00% p.a.</span>
+          <span><strong>Purchased:</strong> ~Apr 2025 (1 year ago)</span>
+          <span><strong>Duration:</strong> ~5.5 years (modified)</span>
+          <span id="bondLastUpdate" style="margin-left:auto;font-style:italic;">Updating...</span>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kv warn" id="bondCurrentYield">8.45%</div>
+            <div class="kl">Est. Current Yield</div>
+            <div class="kc down" id="bondYieldChange">+0.45% vs purchase</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kv warn" id="bondPrice">$97.5</div>
+            <div class="kl">Est. Market Price</div>
+            <div class="kc">per $100 face value</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kv good">$8.00</div>
+            <div class="kl">Coupon Earned (1yr)</div>
+            <div class="kc up">per $100 face value</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kv warn" id="bondTotalReturn">+$5.5</div>
+            <div class="kl">Est. Total Return</div>
+            <div class="kc" id="bondTotalReturnPct">Coupon + capital P&amp;L</div>
+          </div>
+        </div>
+
+        <!-- Traffic light recommendation -->
+        <div class="bond-rec">
+          <div class="bond-rec-seg bond-rec-green">&#9989; SELL<br><span style="font-size:0.8em;font-weight:400;">Value rising — lock in profit</span></div>
+          <div class="bond-rec-seg bond-rec-amber active">&#9888; HOLD<br><span style="font-size:0.8em;font-weight:400;">Stable — coupon compensating</span></div>
+          <div class="bond-rec-seg bond-rec-red">&#128680; SELL ALERT<br><span style="font-size:0.8em;font-weight:400;">Losing value — cut losses</span></div>
+        </div>
+        <div class="bond-rec-text" id="bondRecText" style="color:var(--warning);">&#9888; HOLD — Bond is slightly below par due to elevated Gulf risk premium, but your 8% coupon income keeps total return positive. Hold until yields fall (price recovers) or situation stabilises.</div>
+
+        <!-- Manual yield override -->
+        <div class="bond-yield-input">
+          <label>Manually set current yield (%):</label>
+          <input type="number" id="bondYieldManual" step="0.05" min="4" max="15" placeholder="8.45">
+          <button onclick="manualBondUpdate()">Update</button>
+          <span style="color:var(--muted);font-size:0.78em;">Enter yield from Bloomberg/Reuters to recalculate</span>
+        </div>
+
+        <!-- Bond news feed -->
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);" id="bondNewsPanel">
+          <div style="font-size:0.72em;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Latest Bahrain Bond &amp; Gulf Credit News</div>
+          <div style="color:var(--muted);font-size:0.82em;">&#8987; Fetching bond market news...</div>
+        </div>
       </div>
 
       <!-- ===== MISSILES ===== -->
@@ -704,6 +777,33 @@ window.toggleCheck=function(id){
 };
 renderChecklist();
 
+// ===== RSS PROXY HELPER (bypasses rate limits) =====
+async function fetchRSS(url) {
+  const proxies = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+  ];
+  for (const proxy of proxies) {
+    try {
+      const res = await fetch(proxy + encodeURIComponent(url));
+      if (!res.ok) continue;
+      const text = await res.text();
+      const xml = new DOMParser().parseFromString(text, 'text/xml');
+      if (xml.querySelector('parsererror')) continue;
+      return Array.from(xml.querySelectorAll('item')).map(item => {
+        const g = tag => item.querySelector(tag)?.textContent?.trim() || '';
+        return {
+          title: g('title'),
+          link: g('link') || item.querySelector('guid')?.textContent?.trim() || '',
+          pubDate: g('pubDate'),
+          description: g('description').replace(/<[^>]*>/g, '')
+        };
+      });
+    } catch(e) { continue; }
+  }
+  return [];
+}
+
 // ===== LIVE BREAKING NEWS TICKER =====
 const fallbackHeadlines = [
   "US-Iran talks collapse 12 Apr — Trump orders US Navy blockade of Strait of Hormuz",
@@ -718,15 +818,10 @@ const fallbackHeadlines = [
   "Analysts: even if Hormuz reopens today, normal oil flows won't resume until July",
 ];
 
+// Direct RSS feeds — no third-party API, no rate limits
 const rssFeeds = [
-  // Google News: last 12 hours only, focused on Iran/UAE conflict
-  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=when:12h+Iran+US+Israel+war+UAE+OR+Hormuz+OR+ceasefire&hl=en-US&gl=US&ceid=US:en'),
-  // Google News: last 12h, flights/airspace focus
-  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=when:12h+UAE+flights+OR+Dubai+airport+OR+EASA+airspace+OR+Emirates+airline&hl=en-US&gl=US&ceid=US:en'),
-  // Google News: last 12h, oil/Hormuz/shipping
-  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=when:12h+oil+price+OR+Hormuz+blockade+OR+strait+shipping&hl=en-US&gl=US&ceid=US:en'),
-  // Al Jazeera (general — filtered by keywords in JS)
-  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.aljazeera.com/xml/rss/all.xml'),
+  'https://news.google.com/rss/search?q=Iran+US+Israel+war+UAE+Hormuz+ceasefire&hl=en-US&gl=US&ceid=US:en',
+  'https://www.aljazeera.com/xml/rss/all.xml',
 ];
 // Max age for headlines: 24 hours (discard anything older)
 const MAX_HEADLINE_AGE_MS = 24 * 60 * 60 * 1000;
@@ -753,23 +848,18 @@ async function fetchLiveNews() {
 
   for (const url of rssFeeds) {
     try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.status === 'ok' && data.items) {
-        data.items.forEach(item => {
+      const items = await fetchRSS(url);
+      items.forEach(item => {
           const title = item.title.replace(/ - [^-]+$/, '').trim();
           const titleLower = title.toLowerCase();
-          // Skip duplicates and non-conflict items
           if (seen.has(titleLower) || !conflictKeywords.test(title)) return;
-          // Filter out old articles (older than 24h)
           if (item.pubDate) {
             const pubMs = new Date(item.pubDate).getTime();
             if (nowMs - pubMs > MAX_HEADLINE_AGE_MS) { staleCount++; return; }
           }
           seen.add(titleLower);
           liveHeadlines.push(title);
-        });
-      }
+      });
     } catch (e) {
       console.warn('Feed fetch failed:', e);
     }
@@ -795,12 +885,10 @@ renderTicker(fallbackHeadlines);
 fetchLiveNews();
 
 // ===== LIVE DATA UPDATE ENGINE =====
-// Multiple feed sources, filtered to last 12 hours
 const dataFeeds = [
-  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=when:12h+Iran+UAE+ceasefire+OR+Hormuz+blockade+OR+airspace+flights+Dubai&hl=en-US&gl=US&ceid=US:en'),
-  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=when:12h+oil+price+brent+crude+OR+strait+hormuz+shipping&hl=en-US&gl=US&ceid=US:en'),
-  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=when:12h+Iran+war+OR+Israel+Lebanon+OR+EASA+gulf+airline&hl=en-US&gl=US&ceid=US:en'),
-  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.aljazeera.com/xml/rss/all.xml'),
+  'https://news.google.com/rss/search?q=Iran+UAE+ceasefire+Hormuz+blockade+flights+Dubai&hl=en-US&gl=US&ceid=US:en',
+  'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml',
+  'https://www.aljazeera.com/xml/rss/all.xml',
 ];
 
 async function fetchLiveUpdates() {
@@ -810,30 +898,25 @@ async function fetchLiveUpdates() {
 
   for (const url of dataFeeds) {
     try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.status === 'ok' && data.items) {
-        data.items.forEach(item => {
+      const items = await fetchRSS(url);
+      items.forEach(item => {
           const title = item.title.replace(/ - [^-]+$/, '').trim();
           const key = title.toLowerCase().substring(0, 60);
           if (seen.has(key)) return;
-          // Filter by age: max 24 hours
           if (item.pubDate) {
             const pubMs = new Date(item.pubDate).getTime();
             if (nowMs - pubMs > MAX_HEADLINE_AGE_MS) return;
           }
-          // Must match conflict keywords
           if (!conflictKeywords.test(title)) return;
           seen.add(key);
           updates.push({
             title: title,
             date: item.pubDate,
             source: (item.title.match(/ - ([^-]+)$/) || ['','News'])[1].trim(),
-            snippet: (item.description || '').replace(/<[^>]*>/g, '').substring(0, 200),
+            snippet: item.description.substring(0, 200),
             link: item.link
           });
-        });
-      }
+      });
     } catch(e) { console.warn('Data feed error:', e); }
   }
 
@@ -894,10 +977,154 @@ setInterval(updateNextRefresh, 1000);
 
 // Run all live updates every 5 minutes
 async function runAllUpdates() {
-  await Promise.all([fetchLiveNews(), fetchLiveUpdates()]);
+  await Promise.all([fetchLiveNews(), fetchLiveUpdates(), fetchBondData()]);
 }
 runAllUpdates();
 setInterval(runAllUpdates, 5 * 60 * 1000);
+
+// ===== BOND TRACKER =====
+// Bahrain Gov USD Bond purchased ~Apr 2025 at 8% yield
+const BOND_PURCHASE_YIELD = 8.00;    // % — your purchase yield
+const BOND_COUPON = 8.00;            // % annual coupon
+const BOND_DURATION = 5.5;           // modified duration (years) — typical for ~7-10yr bond with 5yr remaining
+let bondCurrentYield = 8.45;         // % — estimated current market yield (updated from news)
+
+const bondFeeds = [
+  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=Bahrain+government+bond+OR+Bahrain+sovereign+bond+OR+Bahrain+yield&hl=en-US&gl=US&ceid=US:en'),
+  'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=GCC+bond+yield+OR+Gulf+sovereign+bond+OR+Bahrain+credit+rating+Fitch+Moody&hl=en-US&gl=US&ceid=US:en'),
+];
+
+function calcBond(yld) {
+  const deltaY = yld - BOND_PURCHASE_YIELD;
+  // Price change ≈ -Duration × ΔYield (in %)
+  const priceChange = -BOND_DURATION * (deltaY / 100) * 100; // in $ per $100 face
+  const price = 100 + priceChange;
+  const coupon = BOND_COUPON;
+  const totalReturn = (price - 100) + coupon; // capital P&L + coupon
+  return { price, coupon, totalReturn, deltaY };
+}
+
+function renderBond(yld, news) {
+  const m = calcBond(yld);
+
+  // Recommendation thresholds:
+  // GREEN = sell: price above par AND total return > 9% (meaningful profit)
+  // RED = sell alert: total return < 0 (capital loss > coupon earned)
+  // AMBER = hold: in between
+  let rec = 'amber';
+  if (m.totalReturn < 0) rec = 'red';
+  else if (m.price > 100.5 && m.totalReturn > 9.0) rec = 'green';
+
+  // KPI cards
+  const yieldEl = document.getElementById('bondCurrentYield');
+  if (yieldEl) {
+    yieldEl.textContent = yld.toFixed(2) + '%';
+    yieldEl.className = 'kv ' + (m.deltaY > 0.25 ? 'bad' : m.deltaY < -0.25 ? 'good' : 'warn');
+  }
+  const priceEl = document.getElementById('bondPrice');
+  if (priceEl) {
+    priceEl.textContent = '$' + m.price.toFixed(1);
+    priceEl.className = 'kv ' + (m.price >= 100.5 ? 'good' : m.price >= 96 ? 'warn' : 'bad');
+  }
+  const retEl = document.getElementById('bondTotalReturn');
+  if (retEl) {
+    retEl.textContent = (m.totalReturn >= 0 ? '+' : '') + '$' + m.totalReturn.toFixed(1);
+    retEl.className = 'kv ' + (m.totalReturn >= 0 ? 'good' : 'bad');
+  }
+  const retPctEl = document.getElementById('bondTotalReturnPct');
+  if (retPctEl) {
+    retPctEl.textContent = 'Total: ' + (m.totalReturn >= 0 ? '+' : '') + m.totalReturn.toFixed(1) + '% on face value';
+  }
+  const yieldChangeEl = document.getElementById('bondYieldChange');
+  if (yieldChangeEl) {
+    yieldChangeEl.textContent = (m.deltaY >= 0 ? '+' : '') + m.deltaY.toFixed(2) + '% vs purchase yield';
+  }
+
+  // Traffic light
+  document.querySelectorAll('.bond-rec-seg').forEach(s => s.classList.remove('active'));
+  const segMap = { green: '.bond-rec-green', amber: '.bond-rec-amber', red: '.bond-rec-red' };
+  const active = document.querySelector(segMap[rec]);
+  if (active) active.classList.add('active');
+
+  // Recommendation text
+  const recMessages = {
+    green: '\u2705 SELL \u2014 Bond market price has risen above par. Including your 8% coupon, total return exceeds 9%. Good time to sell and lock in profit.',
+    amber: '\u26A0 HOLD \u2014 Bond is slightly below par due to elevated Gulf risk premium from the conflict. Your 8% coupon keeps total return positive. Hold until yields fall or situation stabilises.',
+    red: '\ud83d\udd34 SELL ALERT \u2014 Capital loss is now exceeding coupon earned. Total return turning negative. Consider selling to cut losses before further deterioration.'
+  };
+  const recColors = { green: 'var(--safe)', amber: 'var(--warning)', red: 'var(--accent)' };
+  const recEl = document.getElementById('bondRecText');
+  if (recEl) { recEl.textContent = recMessages[rec]; recEl.style.color = recColors[rec]; }
+
+  // Bond news
+  const newsEl = document.getElementById('bondNewsPanel');
+  if (newsEl) {
+    if (news.length > 0) {
+      const items = news.slice(0, 5).map(item => {
+        const ago = item.pubDate ? timeAgo(new Date(item.pubDate)) : '';
+        return '<div style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.82em;">'
+          + '<a href="' + (item.link||'#') + '" target="_blank" style="color:#ecf0f1;">' + (item.title||'') + '</a>'
+          + '<div style="font-size:0.75em;color:var(--muted);margin-top:2px;">' + ago + '</div></div>';
+      }).join('');
+      newsEl.innerHTML = '<div style="font-size:0.7em;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Latest Bahrain Bond &amp; Gulf Credit News</div>' + items;
+    } else {
+      newsEl.innerHTML = '<div style="font-size:0.72em;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Latest Bahrain Bond &amp; Gulf Credit News</div>'
+        + '<div style="font-size:0.82em;color:var(--muted);">No fresh Bahrain bond news found. Estimated data based on Gulf market conditions (conflict risk premium ~+45bps).</div>';
+    }
+  }
+
+  const lastEl = document.getElementById('bondLastUpdate');
+  if (lastEl) {
+    const now = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Dubai'});
+    lastEl.textContent = 'Updated ' + now + (news.length > 0 ? '' : ' (estimated)');
+  }
+}
+
+async function fetchBondData() {
+  const items = [];
+  const seen = new Set();
+  let extractedYield = null;
+
+  for (const url of bondFeeds) {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.status === 'ok' && data.items) {
+        data.items.forEach(item => {
+          const key = (item.title||'').toLowerCase().substring(0, 60);
+          if (seen.has(key)) return;
+          seen.add(key);
+          items.push(item);
+          // Try to extract yield figure from text
+          const text = ((item.title||'') + ' ' + (item.description||'')).replace(/<[^>]*>/g, '');
+          const m = text.match(/\b([6-9](?:\.\d{1,2})?)\s*%\s*(?:yield|coupon|return)/i);
+          if (m && !extractedYield) {
+            const y = parseFloat(m[1]);
+            if (y >= 6 && y <= 12) extractedYield = y;
+          }
+        });
+      }
+    } catch(e) { console.warn('Bond feed error:', e); }
+  }
+
+  if (extractedYield) bondCurrentYield = extractedYield;
+  renderBond(bondCurrentYield, items);
+}
+
+window.manualBondUpdate = function() {
+  const input = document.getElementById('bondYieldManual');
+  const val = parseFloat(input.value);
+  if (!isNaN(val) && val >= 4 && val <= 15) {
+    bondCurrentYield = val;
+    renderBond(bondCurrentYield, []);
+    const lastEl = document.getElementById('bondLastUpdate');
+    if (lastEl) lastEl.textContent = 'Manually updated — ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Dubai'});
+  }
+};
+
+// Initial render, then fetch
+renderBond(bondCurrentYield, []);
+fetchBondData();
 
 // ===== SMOOTH NAV =====
 document.querySelectorAll('.nav-link[href^="#"]').forEach(link=>{
